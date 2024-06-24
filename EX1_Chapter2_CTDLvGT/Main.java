@@ -1,10 +1,12 @@
 package EX1_Chapter2_CTDLvGT;
 
+import java.util.Scanner;
+
 class Node {
     int data;
     Node next;
 
-    public Node(int data) {
+    Node(int data) {
         this.data = data;
         this.next = null;
     }
@@ -13,41 +15,48 @@ class Node {
 class SinglyLinkedList {
     Node head;
 
-    public SinglyLinkedList() {
+    SinglyLinkedList() {
         head = null;
     }
 
-    // 1. Thêm một nút với giá trị x vào đầu danh sách
-    void addToHead(int x) {
-        Node newNode = new Node(x);
+    // 1. Thêm vào đầu danh sách
+    void addToHead(int data) {
+        Node newNode = new Node(data);
         newNode.next = head;
         head = newNode;
     }
 
-    // 2. Thêm một nút với giá trị x vào cuối danh sách
-    void addToTail(int x) {
-        Node newNode = new Node(x);
+    // 2. Thêm vào cuối danh sách
+    void addToTail(int data) {
+        Node newNode = new Node(data);
         if (head == null) {
             head = newNode;
-        } else {
-            Node temp = head;
-            while (temp.next != null) {
-                temp = temp.next;
-            }
-            temp.next = newNode;
+            return;
         }
+        Node temp = head;
+        while (temp.next != null) {
+            temp = temp.next;
+        }
+        temp.next = newNode;
     }
 
-    // 3. Thêm một nút với giá trị x vào sau nút p
-    void addAfter(Node p, int x) {
-        if (p == null) return;
-        Node newNode = new Node(x);
-        newNode.next = p.next;
-        p.next = newNode;
+    // 3. Thêm sau một nút có giá trị cho trước
+    void addAfter(Node prevNode, int data) {
+        if (prevNode == null) {
+            System.out.println("Nút trước không tồn tại");
+            return;
+        }
+        Node newNode = new Node(data);
+        newNode.next = prevNode.next;
+        prevNode.next = newNode;
     }
 
     // 4. Duyệt danh sách
     void traverse() {
+        if (head == null) {
+            System.out.println("Danh sách rỗng");
+            return;
+        }
         Node temp = head;
         while (temp != null) {
             System.out.print(temp.data + " ");
@@ -56,66 +65,82 @@ class SinglyLinkedList {
         System.out.println();
     }
 
-    // 5. Xóa nút đầu và trả về giá trị của nó
+    // 5. Xóa khỏi đầu danh sách
     int deleteFromHead() {
-        if (head == null) return -1;
-        int val = head.data;
+        if (head == null) {
+            System.out.println("Danh sách rỗng");
+            return -1;
+        }
+        int value = head.data;
         head = head.next;
-        return val;
+        return value;
     }
 
-    // 6. Xóa nút cuối và trả về giá trị của nó
+    // 6. Xóa khỏi cuối danh sách
     int deleteFromTail() {
-        if (head == null) return -1;
+        if (head == null) {
+            System.out.println("Danh sách rỗng");
+            return -1;
+        }
         if (head.next == null) {
-            int val = head.data;
+            int value = head.data;
             head = null;
-            return val;
+            return value;
         }
         Node temp = head;
         while (temp.next.next != null) {
             temp = temp.next;
         }
-        int val = temp.next.data;
+        int value = temp.next.data;
         temp.next = null;
-        return val;
+        return value;
     }
 
-    // 7. Xóa nút sau nút p và trả về giá trị của nó
-    int deleteAfter(Node p) {
-        if (p == null || p.next == null) return -1;
-        int val = p.next.data;
-        p.next = p.next.next;
-        return val;
+    // 7. Xóa sau một nút có giá trị cho trước
+    int deleteAfter(Node prevNode) {
+        if (prevNode == null || prevNode.next == null) {
+            System.out.println("Nút trước không tồn tại hoặc không có nút tiếp theo");
+            return -1;
+        }
+        int value = prevNode.next.data;
+        prevNode.next = prevNode.next.next;
+        return value;
     }
 
-    // 8. Xóa nút đầu tiên có giá trị bằng x
-    void dele(int x) {
-        if (head == null) return;
-        if (head.data == x) {
+    // 8. Xóa nút có giá trị cho trước
+    void dele(int data) {
+        if (head == null) {
+            System.out.println("Danh sách rỗng");
+            return;
+        }
+        if (head.data == data) {
             head = head.next;
             return;
         }
         Node temp = head;
-        while (temp.next != null && temp.next.data != x) {
+        while (temp.next != null && temp.next.data != data) {
             temp = temp.next;
         }
-        if (temp.next != null) {
-            temp.next = temp.next.next;
+        if (temp.next == null) {
+            System.out.println("Không tìm thấy nút");
+            return;
         }
+        temp.next = temp.next.next;
     }
 
-    // 9. Tìm kiếm một nút có giá trị x
-    Node search(int x) {
+    // 9. Tìm nút có giá trị cho trước
+    Node search(int data) {
         Node temp = head;
         while (temp != null) {
-            if (temp.data == x) return temp;
+            if (temp.data == data) {
+                return temp;
+            }
             temp = temp.next;
         }
         return null;
     }
 
-    // 10. Đếm số lượng nút
+    // 10. Đếm số lượng nút trong danh sách
     int count() {
         int count = 0;
         Node temp = head;
@@ -126,149 +151,159 @@ class SinglyLinkedList {
         return count;
     }
 
-    // 11. Xóa một nút thứ i trong danh sách, và nút có tồn tại
-    void deleAt(int i) {
-        if (head == null || i < 0) return;
-        if (i == 0) {
+    // 11. Xóa nút ở vị trí cho trước
+    void deleAt(int position) {
+        if (head == null) {
+            System.out.println("Danh sách rỗng");
+            return;
+        }
+        if (position == 0) {
             head = head.next;
             return;
         }
         Node temp = head;
-        for (int j = 0; j < i - 1 && temp.next != null; j++) {
+        for (int i = 0; temp != null && i < position - 1; i++) {
             temp = temp.next;
         }
-        if (temp.next != null) {
-            temp.next = temp.next.next;
+        if (temp == null || temp.next == null) {
+            System.out.println("Vị trí không hợp lệ");
+            return;
         }
+        temp.next = temp.next.next;
     }
 
-    // 12. Sắp xếp danh sách theo thứ tự tăng dần của giá trị
+    // 12. Sắp xếp danh sách
     void sort() {
         if (head == null || head.next == null) return;
-        for (Node i = head; i != null; i = i.next) {
-            for (Node j = i.next; j != null; j = j.next) {
-                if (i.data > j.data) {
-                    int temp = i.data;
-                    i.data = j.data;
-                    j.data = temp;
+        Node current = head;
+        while (current != null) {
+            Node index = current.next;
+            while (index != null) {
+                if (current.data > index.data) {
+                    int temp = current.data;
+                    current.data = index.data;
+                    index.data = temp;
                 }
+                index = index.next;
             }
+            current = current.next;
         }
     }
 
-    // 13. Xóa nút p nếu nó tồn tại trong danh sách
-    void dele(Node p) {
-        if (head == null || p == null) return;
-        if (head == p) {
+    // 13. Xóa nút cụ thể
+    void dele(Node node) {
+        if (head == null || node == null) return;
+        if (head == node) {
             head = head.next;
             return;
         }
         Node temp = head;
-        while (temp.next != null && temp.next != p) {
+        while (temp.next != null && temp.next != node) {
             temp = temp.next;
         }
-        if (temp.next != null) {
-            temp.next = temp.next.next;
-        }
+        if (temp.next == null) return;
+        temp.next = node.next;
     }
 
-    // 14. Tạo và trả về một mảng chứa thông tin của tất cả các nút trong danh sách
+    // 14. Chuyển danh sách thành mảng
     int[] toArray() {
-        int size = count();
-        int[] arr = new int[size];
+        int[] array = new int[count()];
         Node temp = head;
-        for (int i = 0; i < size; i++) {
-            arr[i] = temp.data;
+        int index = 0;
+        while (temp != null) {
+            array[index++] = temp.data;
             temp = temp.next;
         }
-        return arr;
+        return array;
     }
 
-    // 15. Hợp nhất hai danh sách liên kết đơn đã sắp xếp thành một danh sách đã sắp xếp
-    static SinglyLinkedList merge(SinglyLinkedList l1, SinglyLinkedList l2) {
-        SinglyLinkedList merged = new SinglyLinkedList();
-        Node p1 = l1.head;
-        Node p2 = l2.head;
-        while (p1 != null && p2 != null) {
-            if (p1.data <= p2.data) {
-                merged.addToTail(p1.data);
-                p1 = p1.next;
+    // 15. Hợp nhất hai danh sách đã sắp xếp
+    static SinglyLinkedList merge(SinglyLinkedList list1, SinglyLinkedList list2) {
+        SinglyLinkedList mergedList = new SinglyLinkedList();
+        Node temp1 = list1.head;
+        Node temp2 = list2.head;
+        while (temp1 != null && temp2 != null) {
+            if (temp1.data <= temp2.data) {
+                mergedList.addToTail(temp1.data);
+                temp1 = temp1.next;
             } else {
-                merged.addToTail(p2.data);
-                p2 = p2.next;
+                mergedList.addToTail(temp2.data);
+                temp2 = temp2.next;
             }
         }
-        while (p1 != null) {
-            merged.addToTail(p1.data);
-            p1 = p1.next;
+        while (temp1 != null) {
+            mergedList.addToTail(temp1.data);
+            temp1 = temp1.next;
         }
-        while (p2 != null) {
-            merged.addToTail(p2.data);
-            p2 = p2.next;
+        while (temp2 != null) {
+            mergedList.addToTail(temp2.data);
+            temp2 = temp2.next;
         }
-        return merged;
+        return mergedList;
     }
 
-    // 16. Thêm một nút với giá trị x vào trước nút p
-    void addBefore(Node p, int x) {
-        if (head == null || p == null) return;
-        if (head == p) {
-            addToHead(x);
+    // 16. Thêm trước một nút có giá trị cho trước
+    void addBefore(Node nextNode, int data) {
+        if (head == null || nextNode == null) {
+            System.out.println("Danh sách rỗng hoặc nút tiếp theo không tồn tại");
             return;
         }
-        Node newNode = new Node(x);
+        if (head == nextNode) {
+            addToHead(data);
+            return;
+        }
         Node temp = head;
-        while (temp.next != null && temp.next != p) {
+        while (temp.next != null && temp.next != nextNode) {
             temp = temp.next;
         }
-        if (temp.next != null) {
-            newNode.next = temp.next;
-            temp.next = newNode;
-        }
-    }
-
-    // 17. Kết nối một danh sách liên kết đơn vào cuối của danh sách liên kết đơn khác
-    void append(SinglyLinkedList other) {
-        if (head == null) {
-            head = other.head;
+        if (temp.next == null) {
+            System.out.println("Không tìm thấy nút");
             return;
         }
+        Node newNode = new Node(data);
+        newNode.next = nextNode;
+        temp.next = newNode;
+    }
+
+    // 17. Nối thêm danh sách khác vào cuối
+    void append(SinglyLinkedList otherList) {
+        if (head == null) {
+            head = otherList.head;
+            return;
+        }
+        if (otherList.head == null) return;
         Node temp = head;
         while (temp.next != null) {
             temp = temp.next;
         }
-        temp.next = other.head;
+        temp.next = otherList.head;
     }
 
-    // 18. Tìm và trả về giá trị lớn nhất trong danh sách
+    // 18. Tìm giá trị lớn nhất
     int max() {
-        if (head == null) return Integer.MIN_VALUE;
-        int maxVal = head.data;
+        if (head == null) throw new RuntimeException("Danh sách rỗng");
+        int max = head.data;
         Node temp = head;
         while (temp != null) {
-            if (temp.data > maxVal) {
-                maxVal = temp.data;
-            }
+            if (temp.data > max) max = temp.data;
             temp = temp.next;
         }
-        return maxVal;
+        return max;
     }
 
-    // 19. Tìm và trả về giá trị nhỏ nhất trong danh sách
+    // 19. Tìm giá trị nhỏ nhất
     int min() {
-        if (head == null) return Integer.MAX_VALUE;
-        int minVal = head.data;
+        if (head == null) throw new RuntimeException("Danh sách rỗng");
+        int min = head.data;
         Node temp = head;
         while (temp != null) {
-            if (temp.data < minVal) {
-                minVal = temp.data;
-            }
+            if (temp.data < min) min = temp.data;
             temp = temp.next;
         }
-        return minVal;
+        return min;
     }
 
-    // 20. Trả về tổng của tất cả các giá trị trong danh sách
+    // 20. Tính tổng các giá trị
     int sum() {
         int sum = 0;
         Node temp = head;
@@ -279,232 +314,212 @@ class SinglyLinkedList {
         return sum;
     }
 
-    // 21. Trả về giá trị trung bình của tất cả các giá trị trong danh sách
+    // 21. Tính trung bình các giá trị
     int avg() {
-        int sum = sum();
-        int count = count();
-        return count == 0 ? 0 : sum / count;
+        return (head == null) ? 0 : sum() / count();
     }
 
-    // 22. Kiểm tra và trả về true nếu danh sách đã được sắp xếp, trả về false nếu danh sách chưa được sắp xếp
-    boolean sorted() {
-        if (head == null || head.next == null) return true;
-        Node temp = head;
-        while (temp.next != null) {
-            if (temp.data > temp.next.data) {
-                return false;
-            }
-            temp = temp.next;
-        }
-        return true;
+    // 22. Kiểm tra danh sách có trống không
+    boolean isEmpty() {
+        return head == null;
     }
 
-    // 23. Chèn một nút có giá trị x vào danh sách đã sắp xếp để danh sách mới vẫn được sắp xếp
-    void insert(int x) {
-        Node newNode = new Node(x);
-        if (head == null || head.data >= x) {
-            newNode.next = head;
-            head = newNode;
-            return;
-        }
-        Node temp = head;
-        while (temp.next != null && temp.next.data < x) {
-            temp = temp.next;
-        }
-        newNode.next = temp.next;
-        temp.next = newNode;
+    // 23. Làm rỗng danh sách
+    void clear() {
+        head = null;
     }
+}
 
-    // 24. Đảo ngược một danh sách liên kết đơn chỉ trong một lần duyệt qua danh sách
-    void reverse() {
-        Node prev = null;
-        Node current = head;
-        Node next = null;
-        while (current != null) {
-            next = current.next;
-            current.next = prev;
-            prev = current;
-            current = next;
-        }
-        head = prev;
-    }
-
-    // 25. Kiểm tra xem hai danh sách liên kết đơn có cùng nội dung hay không
-    boolean equals(SinglyLinkedList other) {
-        Node temp1 = head;
-        Node temp2 = other.head;
-        while (temp1 != null && temp2 != null) {
-            if (temp1.data != temp2.data) {
-                return false;
-            }
-            temp1 = temp1.next;
-            temp2 = temp2.next;
-        }
-        return temp1 == null && temp2 == null;
-    }
-
-/*Hàm thực thi code từ phần 1 đến 25 t*/
-
+public class Main {
     public static void main(String[] args) {
-        //0. Danh sách ban đầu
-        System.out.println("0. Danh sách ban đầu là rỗng.");
+        SinglyLinkedList list = new SinglyLinkedList();
+        Scanner scanner = new Scanner(System.in);
+        int choice, data, position;
+        Node node;
 
-        SinglyLinkedList list1 = new SinglyLinkedList();
+        do {
+            System.out.println("\nMenu:");
+            System.out.println("1. Thêm vào đầu danh sách");
+            System.out.println("2. Thêm vào cuối danh sách");
+            System.out.println("3. Thêm sau một nút có giá trị cho trước");
+            System.out.println("4. Duyệt danh sách");
+            System.out.println("5. Xóa khỏi đầu danh sách");
+            System.out.println("6. Xóa khỏi cuối danh sách");
+            System.out.println("7. Xóa sau một nút có giá trị cho trước");
+            System.out.println("8. Xóa nút có giá trị cho trước");
+            System.out.println("9. Tìm nút có giá trị cho trước");
+            System.out.println("10. Đếm số lượng nút trong danh sách");
+            System.out.println("11. Xóa nút ở vị trí cho trước");
+            System.out.println("12. Sắp xếp danh sách");
+            System.out.println("13. Xóa nút cụ thể");
+            System.out.println("14. Chuyển danh sách thành mảng");
+            System.out.println("15. Hợp nhất hai danh sách đã sắp xếp");
+            System.out.println("16. Thêm trước một nút có giá trị cho trước");
+            System.out.println("17. Nối thêm danh sách khác vào cuối");
+            System.out.println("18. Tìm giá trị lớn nhất");
+            System.out.println("19. Tìm giá trị nhỏ nhất");
+            System.out.println("20. Tính tổng các giá trị");
+            System.out.println("21. Tính trung bình các giá trị");
+            System.out.println("22. Kiểm tra danh sách có trống không");
+            System.out.println("23. Làm rỗng danh sách");
+            System.out.println("0. Thoát");
+            System.out.print("Chọn lựa chọn: ");
+            choice = scanner.nextInt();
 
-        // 1. Thêm một nút với giá trị x vào đầu danh sách
-        list1.addToHead(3);
-        System.out.print("1.1 Danh sách 1 sau khi thêm 3 vào đầu: ");
-        list1.traverse();
+            switch (choice) {
+                case 1:
+                    System.out.print("Nhập giá trị: ");
+                    data = scanner.nextInt();
+                    list.addToHead(data);
+                    break;
+                case 2:
+                    System.out.print("Nhập giá trị: ");
+                    data = scanner.nextInt();
+                    list.addToTail(data);
+                    break;
+                case 3:
+                    System.out.print("Nhập giá trị của nút trước: ");
+                    data = scanner.nextInt();
+                    node = list.search(data);
+                    if (node != null) {
+                        System.out.print("Nhập giá trị để thêm: ");
+                        data = scanner.nextInt();
+                        list.addAfter(node, data);
+                    } else {
+                        System.out.println("Không tìm thấy nút");
+                    }
+                    break;
+                case 4:
+                    list.traverse();
+                    break;
+                case 5:
+                    System.out.println("Giá trị đã xóa: " + list.deleteFromHead());
+                    break;
+                case 6:
+                    System.out.println("Giá trị đã xóa: " + list.deleteFromTail());
+                    break;
+                case 7:
+                    System.out.print("Nhập giá trị của nút trước: ");
+                    data = scanner.nextInt();
+                    node = list.search(data);
+                    if (node != null) {
+                        System.out.println("Giá trị đã xóa: " + list.deleteAfter(node));
+                    } else {
+                        System.out.println("Không tìm thấy nút");
+                    }
+                    break;
+                case 8:
+                    System.out.print("Nhập giá trị: ");
+                    data = scanner.nextInt();
+                    list.dele(data);
+                    break;
+                case 9:
+                    System.out.print("Nhập giá trị: ");
+                    data = scanner.nextInt();
+                    node = list.search(data);
+                    System.out.println(node != null ? "Tìm thấy nút" : "Không tìm thấy nút");
+                    break;
+                case 10:
+                    System.out.println("Số lượng nút: " + list.count());
+                    break;
+                case 11:
+                    System.out.print("Nhập vị trí: ");
+                    position = scanner.nextInt();
+                    list.deleAt(position);
+                    break;
+                case 12:
+                    list.sort();
+                    System.out.println("Danh sách đã được sắp xếp");
+                    break;
+                case 13:
+                    System.out.print("Nhập giá trị của nút để xóa: ");
+                    data = scanner.nextInt();
+                    node = list.search(data);
+                    if (node != null) {
+                        list.dele(node);
+                    } else {
+                        System.out.println("Không tìm thấy nút");
+                    }
+                    break;
+                case 14:
+                    int[] array = list.toArray();
+                    System.out.print("Mảng: ");
+                    for (int value : array) {
+                        System.out.print(value + " ");
+                    }
+                    System.out.println();
+                    break;
+                case 15:
+                    SinglyLinkedList list2 = new SinglyLinkedList();
+                    System.out.println("Nhập danh sách thứ hai (kết thúc bằng -1): ");
+                    while (true) {
+                        data = scanner.nextInt();
+                        if (data == -1) break;
+                        list2.addToTail(data);
+                    }
+                    list2.sort();
+                    list = SinglyLinkedList.merge(list, list2);
+                    System.out.println("Hai danh sách đã được hợp nhất");
+                    break;
+                case 16:
+                    System.out.print("Nhập giá trị của nút tiếp theo: ");
+                    data = scanner.nextInt();
+                    node = list.search(data);
+                    if (node != null) {
+                        System.out.print("Nhập giá trị để thêm: ");
+                        data = scanner.nextInt();
+                        list.addBefore(node, data);
+                    } else {
+                        System.out.println("Không tìm thấy nút");
+                    }
+                    break;
+                case 17:
+                    SinglyLinkedList otherList = new SinglyLinkedList();
+                    System.out.println("Nhập danh sách cần nối (kết thúc bằng -1): ");
+                    while (true) {
+                        data = scanner.nextInt();
+                        if (data == -1) break;
+                        otherList.addToTail(data);
+                    }
+                    list.append(otherList);
+                    System.out.println("Danh sách đã được nối thêm");
+                    break;
+                case 18:
+                    try {
+                        System.out.println("Giá trị lớn nhất: " + list.max());
+                    } catch (RuntimeException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 19:
+                    try {
+                        System.out.println("Giá trị nhỏ nhất: " + list.min());
+                    } catch (RuntimeException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 20:
+                    System.out.println("Tổng các giá trị: " + list.sum());
+                    break;
+                case 21:
+                    System.out.println("Giá trị trung bình: " + list.avg());
+                    break;
+                case 22:
+                    System.out.println(list.isEmpty() ? "Danh sách trống" : "Danh sách không trống");
+                    break;
+                case 23:
+                    list.clear();
+                    System.out.println("Danh sách đã được làm rỗng");
+                    break;
+                case 0:
+                    System.out.println("Thoát chương trình");
+                    break;
+                default:
+                    System.out.println("Lựa chọn không hợp lệ");
+                    break;
+            }
+        } while (choice != 0);
 
-        list1.addToHead(2);
-        System.out.print("1.2 Danh sách 1 sau khi thêm 2 vào đầu: ");
-        list1.traverse();
-
-        // 2. Thêm một nút với giá trị x vào cuối danh sách
-        list1.addToTail(4);
-        System.out.print("2. Danh sách 1 sau khi thêm 4 vào cuối: ");
-        list1.traverse();
-
-        // 3. Thêm một nút với giá trị x vào sau nút p
-        list1.addAfter(list1.search(3), 5);
-        System.out.print("3. Danh sách 1 sau khi thêm 5 sau nút 3: ");
-        list1.traverse();
-
-        // 4. Duyệt danh sách
-        System.out.print("4. Duyệt danh sách 1: ");
-        list1.traverse();
-
-        // 5. Xóa nút đầu và trả về giá trị của nó
-        int deletedHead = list1.deleteFromHead();
-        System.out.println("5.1 Giá trị nút đầu bị xóa: " + deletedHead);
-        System.out.print("5.2 Danh sách 1 sau khi xóa đầu: ");
-        list1.traverse();
-
-        // 6. Xóa nút cuối và trả về giá trị của nó
-        int deletedTail = list1.deleteFromTail();
-        System.out.println("6.1 Giá trị nút cuối bị xóa: " + deletedTail);
-        System.out.print("6.2 Danh sách 1 sau khi xóa cuối: ");
-        list1.traverse();
-
-        // 7. Xóa nút sau nút p và trả về giá trị của nó
-        list1.addToHead(6);
-        list1.addToTail(7);
-        System.out.print("7.0 Danh sách 1 sau khi thêm nút 6 vào đầu và 7 vào cuối: ");
-        list1.traverse();
-        int deletedAfter = list1.deleteAfter(list1.search(6));
-        System.out.println("7.1 Giá trị nút sau nút 6 bị xóa: " + deletedAfter);
-        System.out.print("7.2 Danh sách 1 sau khi xóa nút sau 6: ");
-        list1.traverse();
-
-        // 8. Xóa nút đầu tiên có giá trị bằng x
-        list1.dele(6);
-        System.out.print("8. Danh sách 1 sau khi xóa nút có giá trị 6: ");
-        list1.traverse();
-
-        // 9. Tìm kiếm một nút có giá trị x
-        Node foundNode = list1.search(4);
-        System.out.println("9. Tìm thấy nút có giá trị 4: " + (foundNode != null));
-
-        // 10. Đếm số lượng nút
-        int count = list1.count();
-        System.out.println("10. Số lượng nút trong danh sách 1: " + count);
-
-        // 11. Xóa một nút thứ i trong danh sách, và nút có tồn tại
-        list1.addToHead(8);
-        list1.addToHead(9);
-        System.out.print("11.1 Danh sách 1 sau khi thêm lần lượt nút 8 và 9 vào đầu: ");
-        list1.traverse();
-        list1.deleAt(2);
-        System.out.print("11.2 Danh sách 1 sau khi xóa nút thứ 2: ");
-        list1.traverse();
-
-        // 12. Sắp xếp danh sách theo thứ tự tăng dần của giá trị
-        list1.sort();
-        System.out.print("12. Danh sách 1 sau khi sắp xếp: ");
-        list1.traverse();
-
-        // 13. Xóa nút p nếu nó tồn tại trong danh sách
-        Node nodeToDelete = list1.search(8);
-        list1.dele(nodeToDelete);
-        System.out.print("13. Danh sách 1 sau khi xóa nút có giá trị 8: ");
-        list1.traverse();
-
-        // 14. Tạo và trả về một mảng chứa thông tin của tất cả các nút trong danh sách
-        int[] arr = list1.toArray();
-        System.out.print("14. Mảng chứa thông tin các nút: ");
-        for (int val : arr) {
-            System.out.print(val + " ");
-        }
-        System.out.println();
-
-        // 15. Hợp nhất hai danh sách liên kết đơn đã sắp xếp thành một danh sách đã sắp xếp
-        SinglyLinkedList list2 = new SinglyLinkedList();
-        list2.addToHead(5);
-        list2.addToHead(7);
-        list2.sort();
-        System.out.print("15.1 Danh sách 2 sau khi thêm lần lượt nút 5 và 7 vào đầu: ");
-        list2.traverse();
-        SinglyLinkedList mergedList = merge(list1, list2);
-        System.out.print("15.2 Danh sách 0 sau khi hợp nhất ds1 và ds2: ");
-        mergedList.traverse();
-
-        // 16. Thêm một nút với giá trị x vào trước nút p
-        mergedList.addBefore(mergedList.search(5), 1);
-        System.out.print("16. Danh sách 0 sau khi thêm 1 trước nút 5: ");
-        mergedList.traverse();
-
-        // 17. Kết nối một danh sách liên kết đơn vào cuối của danh sách liên kết đơn khác
-        SinglyLinkedList list3 = new SinglyLinkedList();
-        list3.addToHead(10);
-        System.out.print("17.1 Danh sách 3 sau khi thêm nút 10 vào đầu: ");
-        list3.traverse();
-        mergedList.append(list3);
-        System.out.print("17.2 Danh sách 0 sau khi kết nối với danh sách 3: ");
-        mergedList.traverse();
-
-        // 18. Tìm và trả về giá trị lớn nhất trong danh sách
-        int maxVal = mergedList.max();
-        System.out.println("18. Giá trị lớn nhất trong danh sách 0: " + maxVal);
-
-        // 19. Tìm và trả về giá trị nhỏ nhất trong danh sách
-        int minVal = mergedList.min();
-        System.out.println("19. Giá trị nhỏ nhất trong danh sách 0: " + minVal);
-
-        // 20. Trả về tổng của tất cả các giá trị trong danh sách
-        int sum = mergedList.sum();
-        System.out.println("20. Tổng của tất cả các giá trị trong danh sách 0: " + sum);
-
-        // 21. Trả về giá trị trung bình của tất cả các giá trị trong danh sách
-        int avg = mergedList.avg();
-        System.out.println("21. Giá trị trung bình của các giá trị trong danh sách 0: " + avg);
-
-        // 22. Kiểm tra và trả về true nếu danh sách đã được sắp xếp, trả về false nếu danh sách chưa được sắp xếp
-        boolean isSorted = mergedList.sorted();
-        System.out.println("22. Danh sách 0 đã sắp xếp: " + isSorted);
-
-        // 23. Chèn một nút có giá trị x vào danh sách đã sắp xếp để danh sách mới vẫn được sắp xếp
-        mergedList.insert(6);
-        System.out.print("23. Danh sách 0 sau khi chèn giá trị 6 sao cho danh sách mới vẫn được sắp xếp: ");
-        mergedList.traverse();
-
-        // 24. Đảo ngược một danh sách liên kết đơn chỉ trong một lần duyệt qua danh sách
-        mergedList.reverse();
-        System.out.print("24. Danh sách 0 sau khi đảo ngược: ");
-        mergedList.traverse();
-
-        // 25. Kiểm tra xem hai danh sách liên kết đơn có cùng nội dung hay không
-        SinglyLinkedList list4 = new SinglyLinkedList();
-        list4.addToHead(10);
-        list4.addToHead(9);
-        list4.addToHead(8);
-        list4.addToHead(7);
-        list4.addToHead(6);
-        list4.addToHead(5);
-        list4.addToHead(4);
-        list4.addToHead(3);
-        System.out.print("25.1 Danh sách 4 sau khi thêm lần lượt các nút từ 10-3 vào đầu: ");
-        list4.traverse();
-        boolean isEqual = mergedList.equals(list4);
-        System.out.println("25.2 Danh sách 0 và danh sách 4 có cùng nội dung: " + isEqual);
+        scanner.close();
     }
 }
